@@ -31,9 +31,13 @@ const EditarAluno = () => {
   const [novoCursoConcluido, setNovoCursoConcluido] = useState('');
   const [novoCursoAndamento, setNovoCursoAndamento] = useState('');
   const [cursosDisponiveis, setCursosDisponiveis] = useState<Curso[]>([]);
-  const [cursosAssociados, setCursosAssociados] = useState<CursoAssociado[]>([]);
+  const [cursosAssociados, setCursosAssociados] = useState<CursoAssociado[]>(
+    [],
+  );
   const [cursoSelecionado, setCursoSelecionado] = useState('');
-  const [statusCurso, setStatusCurso] = useState<'concluido' | 'em_andamento'>('em_andamento');
+  const [statusCurso, setStatusCurso] = useState<'concluido' | 'em_andamento'>(
+    'em_andamento',
+  );
 
   useEffect(() => {
     if (!id) {
@@ -43,31 +47,31 @@ const EditarAluno = () => {
     }
 
     const fetchData = async () => {
+      console.log(`Buscando dados do aluno com ID: ${id}`);
       try {
         const alunoRes = await fetch(`${API_BASE_URL}/alunos/${id}`);
         if (!alunoRes.ok) throw new Error('Erro ao buscar aluno');
         const alunoData = await alunoRes.json();
-
+        console.log('Dados do aluno:', alunoData);
         // Garantir que os arrays existam
         setAluno({
           ...alunoData,
-          cursosConcluidos: Array.isArray(alunoData.cursosConcluidos) ? alunoData.cursosConcluidos : [],
-          cursosEmAndamento: Array.isArray(alunoData.cursosEmAndamento) ? alunoData.cursosEmAndamento : [],
+          cursosConcluidos: alunoData.cursosConcluidos || [],
+          cursosEmAndamento: alunoData.cursosEmAndamento || [],
         });
 
-        const cursosRes = await fetch(`${API_BASE_URL}/cursos`);
-        if (!cursosRes.ok) throw new Error('Erro ao buscar cursos');
-        const cursosData = await cursosRes.json();
-        setCursosDisponiveis(cursosData);
+        //   const cursosRes = await fetch(`${API_BASE_URL}/cursos`);
+        //   if (!cursosRes.ok) throw new Error('Erro ao buscar cursos');
+        //   const cursosData = await cursosRes.json();
+        //   setCursosDisponiveis(cursosData);
 
-        const vinculadosRes = await fetch(`${API_BASE_URL}/alunos/${id}/cursos`);
-        if (!vinculadosRes.ok) throw new Error('Erro ao buscar cursos associados');
-        const vinculadosData = await vinculadosRes.json();
-        setCursosAssociados(vinculadosData);
-
+        //   const vinculadosRes = await fetch(`${API_BASE_URL}/alunos/${id}/cursos`);
+        //   if (!vinculadosRes.ok) throw new Error('Erro ao buscar cursos associados');
+        //   const vinculadosData = await vinculadosRes.json();
+        //   setCursosAssociados(vinculadosData);
       } catch (error) {
         alert('Erro ao carregar dados do aluno');
-        navigate('/alunos');
+        // navigate('/alunos');
       }
     };
 
@@ -89,7 +93,10 @@ const EditarAluno = () => {
     } else if (tipo === 'andamento' && novoCursoAndamento.trim()) {
       setAluno((prev) => ({
         ...prev,
-        cursosEmAndamento: [...prev.cursosEmAndamento, novoCursoAndamento.trim()],
+        cursosEmAndamento: [
+          ...prev.cursosEmAndamento,
+          novoCursoAndamento.trim(),
+        ],
       }));
       setNovoCursoAndamento('');
     }
@@ -149,9 +156,10 @@ const EditarAluno = () => {
             </button>
           </div>
           <ul className="list-disc list-inside mt-2 text-sm text-gray-700">
-            {Array.isArray(aluno.cursosEmAndamento) && aluno.cursosEmAndamento.map((curso, index) => (
-              <li key={index}>{curso}</li>
-            ))}
+            {Array.isArray(aluno.cursosEmAndamento) &&
+              aluno.cursosEmAndamento.map((curso, index) => (
+                <li key={index}>{curso}</li>
+              ))}
           </ul>
         </div>
 
@@ -174,13 +182,17 @@ const EditarAluno = () => {
             </button>
           </div>
           <ul className="list-disc list-inside mt-2 text-sm text-gray-700">
-            {Array.isArray(aluno.cursosConcluidos) && aluno.cursosConcluidos.map((curso, index) => (
-              <li key={index}>{curso}</li>
-            ))}
+            {Array.isArray(aluno.cursosConcluidos) &&
+              aluno.cursosConcluidos.map((curso, index) => (
+                <li key={index}>{curso}</li>
+              ))}
           </ul>
         </div>
 
-        <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+        >
           Salvar Alterações
         </button>
 
@@ -202,7 +214,9 @@ const EditarAluno = () => {
 
             <select
               value={statusCurso}
-              onChange={(e) => setStatusCurso(e.target.value as 'concluido' | 'em_andamento')}
+              onChange={(e) =>
+                setStatusCurso(e.target.value as 'concluido' | 'em_andamento')
+              }
               className="border px-3 py-2 rounded w-1/2"
             >
               <option value="em_andamento">Em andamento</option>
@@ -213,12 +227,16 @@ const EditarAluno = () => {
             type="button"
             className="bg-purple-600 text-white py-2 px-4 rounded"
             onClick={() => {
-              if (!cursoSelecionado) return alert('Selecione um curso para associar');
+              if (!cursoSelecionado)
+                return alert('Selecione um curso para associar');
               setCursosAssociados((prev) => [
                 ...prev,
                 {
                   id: Number(cursoSelecionado),
-                  nome: cursosDisponiveis.find((c) => c.id === Number(cursoSelecionado))?.nome || '',
+                  nome:
+                    cursosDisponiveis.find(
+                      (c) => c.id === Number(cursoSelecionado),
+                    )?.nome || '',
                   status: statusCurso,
                 },
               ]);
@@ -230,7 +248,8 @@ const EditarAluno = () => {
           <ul className="mt-4">
             {cursosAssociados.map((curso, i) => (
               <li key={i}>
-                {curso.nome} - {curso.status === 'concluido' ? 'Concluído' : 'Em andamento'}
+                {curso.nome} -{' '}
+                {curso.status === 'concluido' ? 'Concluído' : 'Em andamento'}
               </li>
             ))}
           </ul>
