@@ -14,10 +14,9 @@ interface CursoAssociado {
 }
 
 const EditarAluno = () => {
-  const { id } = useParams<{ id: string }>(); // força tipagem string
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  // Estado aluno - mantendo inicial padrão para evitar erros
   const [aluno, setAluno] = useState({
     nome: '',
     cep: '',
@@ -53,7 +52,8 @@ const EditarAluno = () => {
         if (!alunoRes.ok) throw new Error('Erro ao buscar aluno');
         const alunoData = await alunoRes.json();
         console.log('Dados do aluno:', alunoData);
-        // Garantir que os arrays existam
+
+        // Verifica se os dados do aluno estão completos
         setAluno({
           ...alunoData,
           cursosConcluidos: alunoData.cursosConcluidos || [],
@@ -121,15 +121,23 @@ const EditarAluno = () => {
   };
 
   return (
-    <div className="max-w-4x2 mx-autobg-white shadow-md">
-  <div className="flex gap-4 items-center mb-6 bg-primary p-4">
-    <img src="/Union.svg" alt="Ícone" className="w-8 h-8" />
-    <h2 className="text-2xl font-bold text-white">Gerenciador de Alunos</h2>
-  </div>
-      <div className="max-w-2xl mx-auto bg-white shadow-md rounded p-6">
-  <h2 className="text-2xl font-bold text-primary mb-5">Editar Aluno</h2>  
+   <div className="max-w-2xl mx-auto bg-white shadow-md rounded p-6">
+  <h2 className="text-2xl font-bold text-primary mb-6">Editar Aluno</h2>
+  <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Nome</label>
+        <input
+          type="text"
+          value={aluno.nome}
+          onChange={handleChange}
+          className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+          required
+        />
+      </div>
     </div>
-  </div>
+  </form>
+</div>
   );
 };
 

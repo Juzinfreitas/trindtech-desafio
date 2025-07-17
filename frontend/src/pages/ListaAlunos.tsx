@@ -62,7 +62,7 @@ export default function ListaAlunos() {
   );
 
   return (
-    <div className="max-w-4x2 mx-autobg-white shadow-md">
+    <div className="max-w-4xl mx-auto bg-white shadow-md">
   <div className="flex gap-4 items-center mb-6 bg-primary p-4">
     <img src="/Union.svg" alt="Ícone" className="w-8 h-8" />
     <h2 className="text-2xl font-bold text-white">Gerenciador de Alunos</h2>
