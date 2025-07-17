@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from '../services/api';
+import { Lupa } from '../components/lupa';
+import { IconeBotaoAdicionar } from '../components/icone_botao_adicionar';
 
 interface Aluno {
   id: number;
@@ -60,24 +62,36 @@ export default function ListaAlunos() {
   );
 
   return (
-    <div className="max-w-4xl mx-auto mt-10 p-4 bg-white rounded shadow">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">Lista de Alunos</h2>
-        <button
-          onClick={() => navigate('/alunos/novo')}
-          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-        >
-          Novo Aluno
-        </button>
+    <div className="max-w-4x2 mx-autop-4 bg-white rounded shadow">
+      <div className="flex gap-6 items-center mb-4 bg-primary p-6">
+        <img src="/Union.svg" alt="" />
+        <h2 className="text-2xl font-bold text-white">Gerenciador de Alunos</h2>
       </div>
-
-      <input
-        type="text"
-        placeholder="Buscar por nome..."
-        className="w-full mb-4 px-3 py-2 border rounded"
-        value={filtro}
-        onChange={(e) => setFiltro(e.target.value)}
-      />
+      <div className="flex w-full items-center">
+        <div className=" flex border py-4 my-4 mx-4 rounded-md w-full">
+          <input
+            type="text"
+            placeholder="Buscar por nome..."
+            className="w-full border-none pl-4 focus:outline-none"
+            value={filtro}
+            onChange={(e) => setFiltro(e.target.value)}
+          />
+          <span className="pr-4">
+            <Lupa />
+          </span>
+        </div>
+        <div className="flex items-center gap-2 border rounded-md h-fit">
+          <span className="">
+            <IconeBotaoAdicionar />
+          </span>
+          <button
+            onClick={() => navigate('/alunos/novo')}
+            className="text-primary rounded"
+          >
+            Adicionar
+          </button>
+        </div>
+      </div>
 
       <table className="w-full border-collapse">
         <thead>
