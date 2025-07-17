@@ -127,7 +127,7 @@ const EditarAluno = () => {
     <h2 className="text-2xl font-bold text-white">Gerenciador de Alunos</h2>
   </div>
       <div className="max-w-2xl mx-auto bg-white shadow-md rounded p-6">
-  <h2 className="text-2xl font-bold text-primary mb-6">Editar Aluno</h2>  
+  <h2 className="text-2xl font-bold text-primary mb-5">Editar Aluno</h2>  
     </div>
   </div>
   );
