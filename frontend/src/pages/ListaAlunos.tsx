@@ -62,7 +62,7 @@ export default function ListaAlunos() {
   );
 
   return (
-    <div className="max-w-4xl mx-auto bg-white shadow-md">
+    <div className="max-w-4x2 mx-auto bg-white shadow-md">
   <div className="flex gap-4 items-center mb-6 bg-primary p-4">
     <img src="/Union.svg" alt="Ícone" className="w-8 h-8" />
     <h2 className="text-2xl font-bold text-white">Gerenciador de Alunos</h2>
@@ -132,6 +132,28 @@ export default function ListaAlunos() {
       )}
     </tbody>
   </table>
+  <div className="flex justify-center mt-6 space-x-2">
+    <a href="#" className="px-3 py-1 text-gray-700 border border-gray-100 rounded hover:bg-gray-100">
+      ← Anterior
+    </a>
+    <a href="#" className="px-3 py-1 text-number_bottom_bar bg-bottom_bar border border-blue-200 rounded">
+      1
+    </a>
+    <a href="#" className="px-3 py-1 text-gray-700 border border-gray-100 rounded hover:bg-gray-100">
+      2
+    </a>
+    <a href="#" className="px-3 py-1 text-gray-700 border border-gray-100 rounded hover:bg-gray-100">
+      3
+    </a>
+    <span className="px-3 py-1 text-gray-500">...</span>
+    <a href="#" className="px-3 py-1 text-gray-700 border border-gray-100 rounded hover:bg-gray-100">
+      10
+    </a>
+    <a href="#" className="px-3 py-1 text-gray-700 border border-gray-100 rounded hover:bg-gray-100">
+    Próximo →
+    </a>
+  </div>
+
 </div>
 
   );

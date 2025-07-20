@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from '../services/api';
+import ListaAlunos from './ListaAlunos';
+import { Lixeira } from '../components/lixeira';
 
 interface Curso {
   id: number;
@@ -19,10 +21,19 @@ const EditarAluno = () => {
 
   const [aluno, setAluno] = useState({
     nome: '',
+    sobrenome: '',
+    email: '',
+    dataNascimento: '',
+    cpf: '',
+    genero: '',
     cep: '',
     cidade: '',
     estado: '',
     logradouro: '',
+    numero: '',
+    bairro: '',
+    complemento: '',
+    pais: '',
     cursosConcluidos: [] as string[],
     cursosEmAndamento: [] as string[],
   });
@@ -101,7 +112,7 @@ const EditarAluno = () => {
       setNovoCursoAndamento('');
     }
   };
-
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -121,23 +132,181 @@ const EditarAluno = () => {
   };
 
   return (
-   <div className="max-w-2xl mx-auto bg-white shadow-md rounded p-6">
-  <h2 className="text-2xl font-bold text-primary mb-6">Editar Aluno</h2>
-  <form onSubmit={handleSubmit} className="space-y-4">
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Nome</label>
-        <input
-          type="text"
-          value={aluno.nome}
-          onChange={handleChange}
-          className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-          required
-        />
+    <div className="max-w-4x2 bg-white rounded shadow">
+      <div className="flex items-center justify-between mb-6 bg-primary p-4" >
+        <div className="flex gap-4 items-center">
+          <img src="/Union.svg" alt="Ícone" className="w-8 h-8" />
+          <h2 className="text-2xl font-bold text-white">Gerenciador de Alunos | </h2>
+          <span className='flex items-center text-2xl text-white'>{aluno.nome} {aluno.sobrenome}</span>
+        </div>
+        <Lixeira />
       </div>
+      <div className="flex items-center gap-4 mb-8">
+        <img src="/Union.svg" alt="" className="w-8 h-8" />
+      </div>
+      <form onSubmit={handleSubmit} className="space-y-8  p-6">
+        <div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Nome*</label>
+              <input
+                type="text"
+                name="nome"
+                value={aluno.nome}
+                onChange={handleChange}
+                className="mt-1 w-full border border-gray-300 rounded-md px-3 py-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Sobrenome</label>
+              <input
+                type="text"
+                name="sobrenome"
+                value={aluno.sobrenome}
+                onChange={handleChange}
+                className="mt-1 w-full border border-gray-300 rounded-md px-3 py-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Data de nascimento</label>
+              <input
+                type="date"
+                name="dataNascimento"
+                value={aluno.dataNascimento}
+                onChange={handleChange}
+                className="mt-1 w-full border border-gray-300 rounded-md px-3 py-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">CPF</label>
+              <input
+                type="text"
+                name="cpf"
+                value={aluno.cpf}
+                onChange={handleChange}
+                className="mt-1 w-full border border-gray-300 rounded-md px-3 py-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Gênero</label>
+              <input
+                type="text"
+                name="genero"
+                value={aluno.genero}
+                onChange={handleChange}
+                className="mt-1 w-full border border-gray-300 rounded-md px-3 py-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Email*</label>
+              <input
+                type="email"
+                name="email"
+                value={aluno.email}
+                onChange={handleChange}
+                className="mt-1 w-full border border-gray-300 rounded-md px-3 py-2"
+              />
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 className="text-lg font-medium text-gray-800 mb-4">Localização</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">CEP</label>
+              <input
+                type="text"
+                name="cep"
+                value={aluno.cep}
+                onChange={handleChange}
+                className="mt-1 w-full border border-gray-300 rounded-md px-3 py-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">País*</label>
+              <input
+                type="text"
+                name="pais"
+                value={aluno.pais}
+                onChange={handleChange}
+                className="mt-1 w-full border border-gray-300 rounded-md px-3 py-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Rua</label>
+              <input
+                type="text"
+                name="logradouro"
+                value={aluno.logradouro}
+                onChange={handleChange}
+                className="mt-1 w-full border border-gray-300 rounded-md px-3 py-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Bairro</label>
+              <input
+                type="text"
+                name="bairro"
+                value={aluno.bairro}
+                onChange={handleChange}
+                className="mt-1 w-full border border-gray-300 rounded-md px-3 py-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Número*</label>
+              <input
+                type="text"
+                name="numero"
+                value={aluno.numero}
+                onChange={handleChange}
+                className="mt-1 w-full border border-gray-300 rounded-md px-3 py-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Complemento</label>
+              <input
+                type="text"
+                name="complemento"
+                value={aluno.complemento}
+                onChange={handleChange}
+                className="mt-1 w-full border border-gray-300 rounded-md px-3 py-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Cidade</label>
+              <input
+                type="text"
+                name="cidade"
+                value={aluno.cidade}
+                onChange={handleChange}
+                className="mt-1 w-full border border-gray-300 rounded-md px-3 py-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Estado</label>
+              <input
+                type="text"
+                name="estado"
+                value={aluno.estado}
+                onChange={handleChange}
+                className="mt-1 w-full border border-gray-300 rounded-md px-3 py-2"
+              />
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 className="text-lg font-medium text-gray-800 mb-4">Cursos</h3>
+        </div>
+        <div className="flex justify-end">
+          <button
+            type="submit"
+            className="bg-primary text-white rounded-md px-6 py-2 text-lg hover:bg-blue-700"
+          >
+            Salvar Alterações
+          </button>
+        </div>
+      </form>
     </div>
-  </form>
-</div>
   );
 };
 

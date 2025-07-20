@@ -2,25 +2,42 @@ import React, { useState } from 'react';
 
 interface AlunoForm {
   nome: string;
+  sobrenome: string;
+  email: string;
+  dataNascimento: string;
+  cpf: string;  
+  genero: string;
   cep: string;
   cidade: string;
   estado: string;
   logradouro: string;
+  numero: string;
+  bairro: string;
+  complemento: string;
+  pais: string;
 }
 
 export default function AdicionarAluno() {
   const [form, setForm] = useState<AlunoForm>({
     nome: '',
+    sobrenome: '',
+    email: '',
+    dataNascimento: '',
+    cpf: '',
+    genero: '',
     cep: '',
     cidade: '',
     estado: '',
     logradouro: '',
+    numero: '',
+    bairro: '',
+    complemento: '',
+    pais: '',
   });
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
-  // Atualiza o estado do formulário
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
@@ -28,7 +45,7 @@ export default function AdicionarAluno() {
 
   // Busca endereço pelo CEP usando ViaCEP
   async function buscarEnderecoPorCep(cep: string) {
-    if (cep.length !== 8) return; // ViaCEP usa CEP sem hífen, 8 dígitos
+    if (cep.length !== 8) return; 
     try {
       const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
       const data = await res.json();
@@ -59,7 +76,7 @@ export default function AdicionarAluno() {
 
       if (res.ok) {
         setMessage('Aluno cadastrado com sucesso!');
-        setForm({ nome: '', cep: '', cidade: '', estado: '', logradouro: '' });
+        setForm({ nome: '', sobrenome: '', email:'', dataNascimento: '', cpf:'', genero:'',  cep: '', cidade: '', estado: '', logradouro: '', numero:'', bairro:'', complemento:'', pais:'' });
       } else {
         const err = await res.json();
         setMessage('Erro: ' + (err.message || 'Não foi possível cadastrar'));
@@ -106,7 +123,58 @@ export default function AdicionarAluno() {
             className="w-full border border-gray-300 rounded px-3 py-2"
           />
         </div>
-
+          <div>
+          <label className="block mb-1 font-medium" htmlFor="nome">Sobrenome</label>
+          <input
+            id="sobrenome"
+            name="sobrenome"
+            type="text"
+            value={form.sobrenome}
+            onChange={handleChange}
+            required
+            className="w-full border border-gray-300 rounded px-3 py-2"
+          />
+        </div>
+          <div>
+          <label className="block mb-1 font-medium" htmlFor="nome">Email</label>
+          <input
+            id="email"
+            name="email"
+            type="text"
+            value={form.email}
+            onChange={handleChange}
+            required
+            className="w-full border border-gray-300 rounded px-3 py-2"
+          />
+          </div>
+          <div>
+          <label className="block mb-1 font-medium" htmlFor="nome">Data de Nascimento</label>
+          <input
+            id="dataNascimento"
+            name="dataNascimento"
+            type="date"
+            value={form.dataNascimento}
+            onChange={handleChange}
+            required
+            className="w-full border border-gray-300 rounded px-3 py-2"
+          />
+          </div>
+          <div>
+          <label className="block mb-1 font-medium" htmlFor="nome">CPF</label>
+          <input
+            id="cpf"
+            name="cpf"
+            type="tel"
+            value={form.cpf}
+            onChange={e => {
+            const onlyNumbers = e.target.value.replace(/\D/g, '');
+            setForm(prev => ({ ...prev, cpf: onlyNumbers }));
+            }}
+            required
+            className="w-full border border-gray-300 rounded px-3 py-2"
+          />
+          </div>
+          
         <div>
           <label className="block mb-1 font-medium" htmlFor="cep">CEP</label>
           <input
@@ -121,7 +189,6 @@ export default function AdicionarAluno() {
             placeholder="Somente números, ex: 12345678"
           />
         </div>
-
         <div>
           <label className="block mb-1 font-medium" htmlFor="cidade">Cidade</label>
           <input
@@ -134,7 +201,6 @@ export default function AdicionarAluno() {
             className="w-full border border-gray-300 rounded px-3 py-2"
           />
         </div>
-
         <div>
           <label className="block mb-1 font-medium" htmlFor="estado">Estado</label>
           <input
@@ -149,7 +215,6 @@ export default function AdicionarAluno() {
             placeholder="Ex: SP"
           />
         </div>
-
         <div>
           <label className="block mb-1 font-medium" htmlFor="logradouro">Logradouro</label>
           <input
@@ -162,7 +227,6 @@ export default function AdicionarAluno() {
             className="w-full border border-gray-300 rounded px-3 py-2"
           />
         </div>
-
         <button
           type="submit"
           disabled={loading}

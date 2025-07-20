@@ -3,6 +3,9 @@ import { useEffect, useState } from 'react';
 interface Aluno {
   id: number;
   nome: string;
+  sobrenome: string;
+  email: string;
+  dataNascimento: string;
   cep: string;
   estado: string;
   cidade: string;
@@ -18,7 +21,7 @@ export default function Alunos() {
     fetch('http://localhost:3000/alunos')
       .then((res) => res.json())
       .then((data) => {
-        console.log('Dados recebidos:', data); // debug
+        console.log('Dados recebidos:', data); 
         setAlunos(data.rows);
       })
       .catch((err) => console.error('Erro ao buscar alunos:', err));
@@ -38,6 +41,15 @@ export default function Alunos() {
             >
               <p>
                 <strong>Nome:</strong> {aluno.nome}
+              </p>
+              <p>
+                <strong>Sobrenome:</strong> {aluno.sobrenome}
+              </p>
+              <p>
+                <strong>Email:</strong> {aluno.email}
+              </p>
+              <p>
+                <strong>Data de Nascimento:</strong> {aluno.dataNascimento}
               </p>
               <p>
                 <strong>CEP:</strong> {aluno.cep}

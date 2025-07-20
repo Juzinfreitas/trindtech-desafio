@@ -14,10 +14,19 @@ const sequelize_typescript_1 = require("sequelize-typescript");
 const aluno_curso_model_1 = require("../../alunoCurso/entities/aluno-curso.model");
 let Aluno = class Aluno extends sequelize_typescript_1.Model {
     nome;
+    sobrenome;
+    email;
+    dataNascimento;
+    cpf;
+    genero;
     cep;
     estado;
     cidade;
     logradouro;
+    numero;
+    bairro;
+    complemento;
+    pais;
     cursos;
 };
 exports.Aluno = Aluno;
@@ -25,6 +34,26 @@ __decorate([
     (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.STRING, allowNull: false }),
     __metadata("design:type", String)
 ], Aluno.prototype, "nome", void 0);
+__decorate([
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.STRING }),
+    __metadata("design:type", String)
+], Aluno.prototype, "sobrenome", void 0);
+__decorate([
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.STRING }),
+    __metadata("design:type", String)
+], Aluno.prototype, "email", void 0);
+__decorate([
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.DATEONLY }),
+    __metadata("design:type", String)
+], Aluno.prototype, "dataNascimento", void 0);
+__decorate([
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.STRING }),
+    __metadata("design:type", String)
+], Aluno.prototype, "cpf", void 0);
+__decorate([
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.STRING }),
+    __metadata("design:type", String)
+], Aluno.prototype, "genero", void 0);
 __decorate([
     (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.STRING }),
     __metadata("design:type", String)
@@ -41,6 +70,22 @@ __decorate([
     (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.STRING }),
     __metadata("design:type", String)
 ], Aluno.prototype, "logradouro", void 0);
+__decorate([
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.STRING }),
+    __metadata("design:type", String)
+], Aluno.prototype, "numero", void 0);
+__decorate([
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.STRING }),
+    __metadata("design:type", String)
+], Aluno.prototype, "bairro", void 0);
+__decorate([
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.STRING }),
+    __metadata("design:type", String)
+], Aluno.prototype, "complemento", void 0);
+__decorate([
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.STRING }),
+    __metadata("design:type", String)
+], Aluno.prototype, "pais", void 0);
 __decorate([
     (0, sequelize_typescript_1.HasMany)(() => aluno_curso_model_1.AlunoCurso),
     __metadata("design:type", Array)
