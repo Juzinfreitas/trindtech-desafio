@@ -1,19 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from '../services/api';
-import ListaAlunos from './ListaAlunos';
 import { Lixeira } from '../components/lixeira';
-
-interface Curso {
-  id: number;
-  nome: string;
-}
-
-interface CursoAssociado {
-  id: number;
-  nome: string;
-  status: 'concluido' | 'em_andamento';
-}
+import { IconeConcluido } from '../components/icone_concluido';
+import { IconeCurso } from '../components/icone_curso';
 
 const EditarAluno = () => {
   const { id } = useParams<{ id: string }>();
@@ -34,20 +24,14 @@ const EditarAluno = () => {
     bairro: '',
     complemento: '',
     pais: '',
-    cursosConcluidos: [] as string[],
-    cursosEmAndamento: [] as string[],
+    cursosConcluidos: [] as {nome: string; dataConclusao:string}[],
+    cursosEmAndamento: [] as {nome: string; dataConclusao: string} [],
   });
 
-  const [novoCursoConcluido, setNovoCursoConcluido] = useState('');
-  const [novoCursoAndamento, setNovoCursoAndamento] = useState('');
-  const [cursosDisponiveis, setCursosDisponiveis] = useState<Curso[]>([]);
-  const [cursosAssociados, setCursosAssociados] = useState<CursoAssociado[]>(
-    [],
-  );
-  const [cursoSelecionado, setCursoSelecionado] = useState('');
-  const [statusCurso, setStatusCurso] = useState<'concluido' | 'em_andamento'>(
-    'em_andamento',
-  );
+const [novoCursoConcluido, setNovoCursoConcluido] = useState('');
+const [dataCursoConcluido, setDataCursoConcluido] = useState('');
+const [novoCursoAndamento, setNovoCursoAndamento] = useState('');
+const [dataCursoAndamento, setDataCursoAndamento] = useState('');
 
   useEffect(() => {
     if (!id) {
@@ -71,18 +55,8 @@ const EditarAluno = () => {
           cursosEmAndamento: alunoData.cursosEmAndamento || [],
         });
 
-        //   const cursosRes = await fetch(`${API_BASE_URL}/cursos`);
-        //   if (!cursosRes.ok) throw new Error('Erro ao buscar cursos');
-        //   const cursosData = await cursosRes.json();
-        //   setCursosDisponiveis(cursosData);
-
-        //   const vinculadosRes = await fetch(`${API_BASE_URL}/alunos/${id}/cursos`);
-        //   if (!vinculadosRes.ok) throw new Error('Erro ao buscar cursos associados');
-        //   const vinculadosData = await vinculadosRes.json();
-        //   setCursosAssociados(vinculadosData);
       } catch (error) {
         alert('Erro ao carregar dados do aluno');
-        // navigate('/alunos');
       }
     };
 
@@ -95,21 +69,33 @@ const EditarAluno = () => {
   };
 
   const adicionarCurso = (tipo: 'concluido' | 'andamento') => {
-    if (tipo === 'concluido' && novoCursoConcluido.trim()) {
+    if (tipo === 'concluido' && 
+      novoCursoConcluido.trim() &&
+      dataCursoConcluido.trim() 
+    ) {
+
       setAluno((prev) => ({
         ...prev,
-        cursosConcluidos: [...prev.cursosConcluidos, novoCursoConcluido.trim()],
+        cursosConcluidos: [...prev.cursosConcluidos, { nome: novoCursoConcluido.trim(), dataConclusao: dataCursoConcluido.trim() }],
       }));
+
       setNovoCursoConcluido('');
-    } else if (tipo === 'andamento' && novoCursoAndamento.trim()) {
+      setDataCursoConcluido('');
+
+    } else if 
+    (tipo === 'andamento' && 
+      novoCursoAndamento.trim() && 
+      dataCursoAndamento.trim()
+  ) {
       setAluno((prev) => ({
         ...prev,
         cursosEmAndamento: [
           ...prev.cursosEmAndamento,
-          novoCursoAndamento.trim(),
+           { nome: novoCursoAndamento.trim(), dataConclusao: dataCursoAndamento.trim() },
         ],
       }));
       setNovoCursoAndamento('');
+      setDataCursoAndamento('');
     }
   };
   
@@ -132,6 +118,7 @@ const EditarAluno = () => {
   };
 
   return (
+    
     <div className="max-w-4x2 bg-white rounded shadow">
       <div className="flex items-center justify-between mb-6 bg-primary p-4" >
         <div className="flex gap-4 items-center">
@@ -294,19 +281,132 @@ const EditarAluno = () => {
             </div>
           </div>
         </div>
-        <div>
-          <h3 className="text-lg font-medium text-gray-800 mb-4">Cursos</h3>
-        </div>
-        <div className="flex justify-end">
+  <div>
+    <h3 className="text-lg font-medium text-gray-800 mb-4">Cursos</h3>
+    <div className="mb-4">
+    <label className="block font-medium">Cursos Concluídos</label>
+    <div className="flex flex-row items-end gap-2 mb-2 justify-between">
+    <div className="flex flex-col flex-1">
+      <input
+        type="text"
+        value={novoCursoConcluido}
+        onChange={e => setNovoCursoConcluido(e.target.value)}
+        className="border rounded px-2 py-1"
+        placeholder="Nome do curso"
+      />
+    </div>  
+      <div className="flex flex-col items-end">
+        <label className="block text-xs font-medium mb-1">Data de conclusão</label>
+      <input
+      type="date"
+      value={dataCursoConcluido}
+      onChange={e => setDataCursoConcluido(e.target.value)}
+      className="border rounded px-2 py-1"
+      placeholder="Data de conclusão"
+    />
+      </div>
+      <button
+        type="button"
+        onClick={() => adicionarCurso('concluido')}
+        className="self-end"
+      >
+        <IconeConcluido />
+      </button>
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <ul>
+      {aluno.cursosConcluidos.map((curso, idx) => (
+        <li key={idx} className="flex items-center gap-2">
+          {curso.nome} - {curso.dataConclusao}
           <button
-            type="submit"
-            className="bg-primary text-white rounded-md px-6 py-2 text-lg hover:bg-blue-700"
+            type="button"
+            onClick={() =>
+              setAluno(prev => ({
+                ...prev,
+                cursosConcluidos: prev.cursosConcluidos.filter((_, i) => i !== idx),
+              }))
+            }
+            className="text-red-500"
           >
-            Salvar Alterações
+            Remover
           </button>
-        </div>
-      </form>
+        </li>
+      ))}
+      </ul>
+  </div>
+    <div className="mb-4">
+    <label className="block font-medium">Cursos em Andamento</label>
+    <div className="flex flex-row items-end gap-2 mb-2 justify-between">
+    <div className="flex flex-col flex-1">
+      <input
+        type="text"
+        value={novoCursoAndamento}
+        onChange={e => setNovoCursoAndamento(e.target.value)}
+        className="border rounded px-2 py-1"
+        placeholder="Nome do curso"
+      />
+      </div>
+      <div className="flex flex-col items-end">
+      <label className="block text-xs font-medium mb-1">Data de conclusão</label>
+      <input
+      type="date"
+      value={dataCursoAndamento}
+      onChange={e => setDataCursoAndamento(e.target.value)}
+      className="border rounded px-2 py-1"
+      placeholder="Data de conclusão"
+    />
     </div>
+      <button
+        type="button"
+        onClick={() => adicionarCurso('andamento')}
+        className="self-end"
+      >
+        < IconeCurso />
+      </button>
+    </div>
+    <ul>
+      {aluno.cursosEmAndamento.map((curso, idx) => (
+        <li key={idx} className="flex items-center gap-2">
+          {curso.nome } - {curso.dataConclusao}
+          <button
+            type="button"
+            onClick={() =>
+              setAluno(prev => ({
+                ...prev,
+                cursosEmAndamento: prev.cursosEmAndamento.filter((_, i) => i !== idx),
+              }))
+            }
+            className="text-red-500"
+          >
+            Remover
+          </button>
+        </li>
+      ))}
+    </ul>
+    </div>
+    </div>
+      <button
+        type="submit"
+        className="bg-primary text-white px-6 py-2 rounded font-bold mt-4"
+      >
+        Salvar alterações
+      </button>
+  </form>
+</div>
   );
 };
 
