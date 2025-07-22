@@ -56,7 +56,6 @@ export default function ListaAlunos() {
     buscarAlunos();
   }, []);
 
-  // Filtro por nome
   const alunosFiltrados = alunos.filter((aluno) =>
     aluno.nome.toLowerCase().includes(filtro.toLowerCase()),
   );

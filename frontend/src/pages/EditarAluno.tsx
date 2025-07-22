@@ -4,6 +4,7 @@ import { API_BASE_URL } from '../services/api';
 import { Lixeira } from '../components/lixeira';
 import { IconeConcluido } from '../components/icone_concluido';
 import { IconeCurso } from '../components/icone_curso';
+import { deletarAluno } from '../services/alunoService';
 
 const EditarAluno = () => {
   const { id } = useParams<{ id: string }>();
@@ -33,6 +34,22 @@ const [dataCursoConcluido, setDataCursoConcluido] = useState('');
 const [novoCursoAndamento, setNovoCursoAndamento] = useState('');
 const [dataCursoAndamento, setDataCursoAndamento] = useState('');
 
+  const deletarAluno = async () => {
+  if (!id) return;
+    if (!window.confirm('Tem certeza que deseja deletar este aluno?')) return;
+      try {
+    const res = await fetch(`${API_BASE_URL}/alunos/${id}`, {
+      method: 'DELETE',
+    });
+    if (res.ok) {
+      navigate('/alunos');
+ } else {
+      alert('Erro ao deletar aluno');
+    }
+  } catch {
+    alert('Erro na requisição');
+  }
+};
   useEffect(() => {
     if (!id) {
       alert('ID do aluno não encontrado');
@@ -126,7 +143,7 @@ const [dataCursoAndamento, setDataCursoAndamento] = useState('');
           <h2 className="text-2xl font-bold text-white">Gerenciador de Alunos | </h2>
           <span className='flex items-center text-2xl text-white'>{aluno.nome} {aluno.sobrenome}</span>
         </div>
-        <Lixeira />
+        <Lixeira onClick={deletarAluno}/>
       </div>
       <div className="flex items-center gap-4 mb-8">
         <img src="/Union.svg" alt="" className="w-8 h-8" />
