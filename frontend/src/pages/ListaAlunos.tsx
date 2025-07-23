@@ -14,6 +14,8 @@ interface Aluno {
 export default function ListaAlunos() {
   const [alunos, setAlunos] = useState<Aluno[]>([]);
   const [filtro, setFiltro] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const alunosPorPagina = 10;
   const navigate = useNavigate();
 
   const buscarAlunos = async () => {
@@ -38,6 +40,7 @@ export default function ListaAlunos() {
   };
 
   console.log('Alunos:', alunos);
+  
 
   // Deletar aluno
   const deletarAluno = async (id: number) => {
@@ -58,6 +61,12 @@ export default function ListaAlunos() {
 
   const alunosFiltrados = alunos.filter((aluno) =>
     aluno.nome.toLowerCase().includes(filtro.toLowerCase()),
+  );
+
+  const totalPages = Math.ceil(alunosFiltrados.length / alunosPorPagina);
+  const alunosPaginados = alunosFiltrados.slice(
+    (currentPage - 1) * alunosPorPagina,
+    currentPage * alunosPorPagina
   );
 
   return (
@@ -131,29 +140,29 @@ export default function ListaAlunos() {
       )}
     </tbody>
   </table>
-  <div className="flex justify-center mt-6 space-x-2">
-    <a href="#" className="px-3 py-1 text-gray-700 border border-gray-100 rounded hover:bg-gray-100">
-      ← Anterior
-    </a>
-    <a href="#" className="px-3 py-1 text-number_bottom_bar bg-bottom_bar border border-blue-200 rounded">
-      1
-    </a>
-    <a href="#" className="px-3 py-1 text-gray-700 border border-gray-100 rounded hover:bg-gray-100">
-      2
-    </a>
-    <a href="#" className="px-3 py-1 text-gray-700 border border-gray-100 rounded hover:bg-gray-100">
-      3
-    </a>
-    <span className="px-3 py-1 text-gray-500">...</span>
-    <a href="#" className="px-3 py-1 text-gray-700 border border-gray-100 rounded hover:bg-gray-100">
-      10
-    </a>
-    <a href="#" className="px-3 py-1 text-gray-700 border border-gray-100 rounded hover:bg-gray-100">
+
+<div className="flex justify-center mt-6 space-x-2">
+  <a href="#" className="px-3 py-1 text-gray-700 border border-gray-300 rounded hover:bg-gray-100">
+    ← Anterior
+  </a>
+  <a href="#" className="px-3 py-1 text-white bg-blue-600 border border-blue-600 rounded">
+    1
+  </a>
+  <a href="#" className="px-3 py-1 text-gray-700 border border-gray-300 rounded hover:bg-gray-100">
+    2
+  </a>
+  <a href="#" className="px-3 py-1 text-gray-700 border border-gray-300 rounded hover:bg-gray-100">
+    3
+  </a>
+  <span className="px-3 py-1 text-gray-500">...</span>
+  <a href="#" className="px-3 py-1 text-gray-700 border border-gray-300 rounded hover:bg-gray-100">
+    10
+  </a>
+  <a href="#" className="px-3 py-1 text-gray-700 border border-gray-300 rounded hover:bg-gray-100">
     Próximo →
-    </a>
-  </div>
-
+  </a>
 </div>
-
+    
+</div>
   );
 }

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface AlunoForm {
   nome: string;
@@ -35,6 +36,7 @@ export default function AdicionarAluno() {
     pais: '',
   });
 
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
@@ -75,8 +77,7 @@ export default function AdicionarAluno() {
       });
 
       if (res.ok) {
-        setMessage('Aluno cadastrado com sucesso!');
-        setForm({ nome: '', sobrenome: '', email:'', dataNascimento: '', cpf:'', genero:'',  cep: '', cidade: '', estado: '', logradouro: '', numero:'', bairro:'', complemento:'', pais:'' });
+        navigate('/alunos', { state: { irParaUltimaPagina: true } });
       } else {
         const err = await res.json();
         setMessage('Erro: ' + (err.message || 'Não foi possível cadastrar'));
@@ -99,8 +100,14 @@ export default function AdicionarAluno() {
   }
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white shadow rounded mt-8">
-      <h2 className="text-2xl font-semibold mb-4">Adicionar Aluno</h2>
+    <div className="min-h-screen bg-gray-100">
+      <div className="flex items-center bg-primary text-white px-8 py-4">
+        <div className='flex items-center gap-4 mb-2'>
+        <img src="/Union.svg" alt="Ícone" className="w-8 h-8" />
+        <h2 className="text-2xl font-bold mb-2 text-center">Gerenciador de Alunos</h2>
+        </div>
+      </div>
+      
       {message && (
         <div
           className={`mb-4 p-2 rounded ${
@@ -110,6 +117,9 @@ export default function AdicionarAluno() {
           {message}
         </div>
       )}
+
+       <div className="max-w-3xl mx-auto mt-10 bg-white p-8 rounded-md shadow-md">
+        <h2 className="text-2xl font-semibold mb-6">Adicionar Aluno</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block mb-1 font-medium" htmlFor="nome">Nome</label>
@@ -235,6 +245,7 @@ export default function AdicionarAluno() {
           {loading ? 'Salvando...' : 'Salvar'}
         </button>
       </form>
+    </div>
     </div>
   );
 }

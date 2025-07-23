@@ -5,6 +5,7 @@ import { Lixeira } from '../components/lixeira';
 import { IconeConcluido } from '../components/icone_concluido';
 import { IconeCurso } from '../components/icone_curso';
 import { deletarAluno } from '../services/alunoService';
+import { Seta } from '../components/seta';
 
 const EditarAluno = () => {
   const { id } = useParams<{ id: string }>();
@@ -139,6 +140,14 @@ const [dataCursoAndamento, setDataCursoAndamento] = useState('');
     <div className="max-w-4x2 bg-white rounded shadow">
       <div className="flex items-center justify-between mb-6 bg-primary p-4" >
         <div className="flex gap-4 items-center">
+          <button
+            onClick={() => navigate('/')}
+            className="mr-2 hover:opacity-80"
+            title="Voltar para lista"
+            style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+            >
+            <Seta />
+          </button>
           <img src="/Union.svg" alt="Ícone" className="w-8 h-8" />
           <h2 className="text-2xl font-bold text-white">Gerenciador de Alunos | </h2>
           <span className='flex items-center text-2xl text-white'>{aluno.nome} {aluno.sobrenome}</span>
