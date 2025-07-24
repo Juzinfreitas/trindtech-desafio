@@ -20,8 +20,8 @@ import { AlunoCurso } from './alunoCurso/entities/aluno-curso.model';
       autoLoadModels: true,
       synchronize: true,
       sync: {
-        alter: true, // Altera colunas existentes automaticamente
-        force: false, // Não apaga tabelas existentes
+        alter: true, 
+        force: false, 
       },
     }),
     AlunoModule,

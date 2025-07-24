@@ -13,4 +13,3 @@ import { AlunoController } from './aluno.controller';
   controllers: [AlunoController],
 })
 export class AlunoModule {}
-

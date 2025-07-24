@@ -1,4 +1,3 @@
-// src/aluno/dto/create-aluno.dto.ts
 import { IsNotEmpty, IsString, Length, IsOptional } from 'class-validator';
 
 export class CreateAlunoDto {
@@ -6,6 +5,26 @@ export class CreateAlunoDto {
   @IsString()
   @Length(2, 100)
   nome: string;
+
+  @IsOptional()
+  @IsString()
+  sobrenome?: string;
+
+  @IsOptional()
+  @IsString()
+  email?: string;
+
+  @IsOptional()
+  @IsString()
+  dataNascimento?: string;
+
+  @IsOptional()
+  @IsString()
+  cpf?: string;
+
+  @IsOptional()
+  @IsString()
+  genero?: string;
 
   @IsOptional()
   @IsString()
@@ -22,4 +41,20 @@ export class CreateAlunoDto {
   @IsOptional()
   @IsString()
   logradouro?: string;
+
+  @IsOptional()
+  @IsString()
+  numero?: string;
+
+  @IsOptional()
+  @IsString()
+  bairro?: string;
+
+  @IsOptional()
+  @IsString()
+  complemento?: string;
+
+  @IsOptional()
+  @IsString()
+  pais?: string;
 }

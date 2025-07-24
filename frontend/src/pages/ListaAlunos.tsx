@@ -9,13 +9,15 @@ interface Aluno {
   nome: string;
   cidade: string;
   estado: string;
+  cursos: string[];
+  createdAt: string;
 }
 
 export default function ListaAlunos() {
   const [alunos, setAlunos] = useState<Aluno[]>([]);
   const [filtro, setFiltro] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const alunosPorPagina = 10;
+  const alunosPorPagina = 5;
   const navigate = useNavigate();
 
   const buscarAlunos = async () => {
@@ -27,6 +29,8 @@ export default function ListaAlunos() {
       }
       const data = await res.json();
       console.log('Dados recebidos:', data);
+      setAlunos(data.rows);
+      
 
       if (Array.isArray(data.rows)) {
         setAlunos(data.rows);
@@ -39,35 +43,60 @@ export default function ListaAlunos() {
     }
   };
 
-  console.log('Alunos:', alunos);
-  
-
-  // Deletar aluno
-  const deletarAluno = async (id: number) => {
-    const confirmar = confirm('Tem certeza que deseja excluir este aluno?');
-    if (!confirmar) return;
-
-    try {
-      await fetch(`${API_BASE_URL}/alunos/${id}`, { method: 'DELETE' });
-      buscarAlunos(); // Atualiza lista após deletar
-    } catch (error) {
-      alert('Erro ao deletar aluno.');
-    }
-  };
-
   useEffect(() => {
     buscarAlunos();
   }, []);
 
-  const alunosFiltrados = alunos.filter((aluno) =>
-    aluno.nome.toLowerCase().includes(filtro.toLowerCase()),
-  );
+  const alunosFiltrados = alunos.filter(
+  (aluno) => aluno && aluno.nome && aluno.nome.toLowerCase().includes(filtro.toLowerCase())
+);
 
   const totalPages = Math.ceil(alunosFiltrados.length / alunosPorPagina);
   const alunosPaginados = alunosFiltrados.slice(
     (currentPage - 1) * alunosPorPagina,
     currentPage * alunosPorPagina
   );
+
+    const renderCursos = (cursos: string[]) => {
+    const visible = cursos.slice(0, 4);
+    const extra = cursos.length - visible.length;
+    return (
+      <div className="flex flex-wrap gap-2">
+        {visible.map((curso, idx) => (
+          <span
+            key={curso + idx}
+            className="bg-blue-50 text-blue-600 px-2 py-1 rounded-full text-xs font-medium"
+          >
+            {curso}
+          </span>
+        ))}
+        {extra > 0 && (
+          <span className="bg-gray-100 text-gray-500 px-2 py-1 rounded-full text-xs font-medium">
+            +{extra}
+          </span>
+        )}
+      </div>
+    );
+  };
+  const renderPaginationButtons = () => {
+    const pageButtons = [];
+    for (let i = 1; i <= totalPages; i++) {
+      pageButtons.push(
+        <button
+          key={i}
+          onClick={() => setCurrentPage(i)}
+          className={`px-3 py-1 border rounded ${
+            currentPage === i
+              ? 'bg-blue-600 text-white border-blue-600'
+              : 'text-gray-700 border-gray-300 hover:bg-gray-100'
+          }`}
+        >
+          {i}
+        </button>
+      );
+    }
+    return pageButtons;
+  };
 
   return (
     <div className="max-w-4x2 mx-auto bg-white shadow-md">
@@ -83,7 +112,9 @@ export default function ListaAlunos() {
         placeholder="Buscar por nome..."
         className="w-full py-2 focus:outline-none"
         value={filtro}
-        onChange={(e) => setFiltro(e.target.value)}
+        onChange={(e) => { setFiltro (e.target.value)
+          setCurrentPage(1); 
+        }}
       />
       <span className="text-gray-500">
         <Lupa />
@@ -102,10 +133,13 @@ export default function ListaAlunos() {
   <table className="w-full border border-gray-200 rounded overflow-hidden text-sm">
     <thead className="bg-gray-100 text-left text-gray-700">
       <tr>
+          <th className="py-3 text-left pl-2">
+            Data de cadastro
+            <span className="ml-2 text-xs cursor-pointer">↑↓</span>
+          </th>
         <th className="border px-4 py-3">Nome</th>
-        <th className="border px-4 py-3">Cidade</th>
         <th className="border px-4 py-3">Estado</th>
-        <th className="border px-4 py-3 text-center">Ações</th>
+        <th className="border px-4 py-3">Cursos</th>
       </tr>
     </thead>
     <tbody>
@@ -116,53 +150,39 @@ export default function ListaAlunos() {
           </td>
         </tr>
       ) : (
-        alunosFiltrados.map((aluno) => (
-          <tr key={aluno.id} className="hover:bg-gray-50">
-            <td className="border px-4 py-3">{aluno.nome}</td>
-            <td className="border px-4 py-3">{aluno.cidade}</td>
-            <td className="border px-4 py-3">{aluno.estado}</td>
-            <td className="border px-4 py-3 text-center space-x-2">
-              <button
-                onClick={() => navigate(`/alunos/${aluno.id}/editar`)}
-                className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
-              >
-                Editar
-              </button>
-              <button
-                onClick={() => deletarAluno(aluno.id)}
-                className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-              >
-                Deletar
-              </button>
-            </td>
+        alunosPaginados.map((aluno) => (
+          <tr key={aluno.id} className=" border-b hover:bg-gray-50">
+                <td className="py-3 pl-2 text-gray-500">
+                  {aluno.createdAt
+                    ? new Date(aluno.createdAt).toLocaleDateString('pt-BR')
+                    : ''}
+                </td>
+            <td className="py-3 font-semibold text-gray-700">{aluno.nome}</td>
+            <td className="py-3 text-gray-600">{aluno.estado}</td>
+            <td className="py-3">{renderCursos(aluno.cursos)}</td>
           </tr>
         ))
       )}
     </tbody>
   </table>
 
-<div className="flex justify-center mt-6 space-x-2">
-  <a href="#" className="px-3 py-1 text-gray-700 border border-gray-300 rounded hover:bg-gray-100">
-    ← Anterior
-  </a>
-  <a href="#" className="px-3 py-1 text-white bg-blue-600 border border-blue-600 rounded">
-    1
-  </a>
-  <a href="#" className="px-3 py-1 text-gray-700 border border-gray-300 rounded hover:bg-gray-100">
-    2
-  </a>
-  <a href="#" className="px-3 py-1 text-gray-700 border border-gray-300 rounded hover:bg-gray-100">
-    3
-  </a>
-  <span className="px-3 py-1 text-gray-500">...</span>
-  <a href="#" className="px-3 py-1 text-gray-700 border border-gray-300 rounded hover:bg-gray-100">
-    10
-  </a>
-  <a href="#" className="px-3 py-1 text-gray-700 border border-gray-300 rounded hover:bg-gray-100">
-    Próximo →
-  </a>
-</div>
-    
-</div>
+      <div className="flex justify-center mt-6 space-x-2">
+        <button
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+          className="px-3 py-1 text-gray-700 border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50"
+        >
+          ← Anterior
+        </button>
+        {renderPaginationButtons()}
+        <button
+          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+          disabled={currentPage === totalPages || totalPages === 0}
+          className="px-3 py-1 text-gray-700 border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50"
+        >
+          Próximo →
+        </button>
+      </div>
+    </div>
   );
 }

@@ -13,10 +13,19 @@ exports.CreateAlunoDto = void 0;
 const class_validator_1 = require("class-validator");
 class CreateAlunoDto {
     nome;
+    sobrenome;
+    email;
+    dataNascimento;
+    cpf;
+    genero;
     cep;
     estado;
     cidade;
     logradouro;
+    numero;
+    bairro;
+    complemento;
+    pais;
 }
 exports.CreateAlunoDto = CreateAlunoDto;
 __decorate([
@@ -25,6 +34,31 @@ __decorate([
     (0, class_validator_1.Length)(2, 100),
     __metadata("design:type", String)
 ], CreateAlunoDto.prototype, "nome", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateAlunoDto.prototype, "sobrenome", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateAlunoDto.prototype, "email", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateAlunoDto.prototype, "dataNascimento", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateAlunoDto.prototype, "cpf", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateAlunoDto.prototype, "genero", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
@@ -45,4 +79,24 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateAlunoDto.prototype, "logradouro", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateAlunoDto.prototype, "numero", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateAlunoDto.prototype, "bairro", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateAlunoDto.prototype, "complemento", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateAlunoDto.prototype, "pais", void 0);
 //# sourceMappingURL=create-aluno.dto.js.map
