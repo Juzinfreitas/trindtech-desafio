@@ -17,7 +17,7 @@ export default function ListaAlunos() {
   const [alunos, setAlunos] = useState<Aluno[]>([]);
   const [filtro, setFiltro] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const alunosPorPagina = 5;
+  const alunosPorPagina = 10;
   const navigate = useNavigate();
 
   const buscarAlunos = async () => {

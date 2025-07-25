@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface Aluno {
   id: number;
@@ -16,6 +17,7 @@ interface Aluno {
 
 export default function Alunos() {
   const [alunos, setAlunos] = useState<Aluno[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch('http://localhost:3000/alunos')
@@ -29,6 +31,14 @@ export default function Alunos() {
 
   return (
     <div className="p-4">
+      <div className="flex justify-end mb-4">
+      <button
+      onClick={() => navigate('/')}
+      className="ml-4 mt-4 px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+    >
+        Voltar para o Início
+      </button>
+      </div>
       <h1 className="text-2xl font-bold mb-4">Lista de Alunos</h1>
       {alunos.length === 0 ? (
         <p>Nenhum aluno encontrado.</p>
