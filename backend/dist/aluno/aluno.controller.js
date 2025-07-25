@@ -24,8 +24,8 @@ let AlunoController = class AlunoController {
         this.alunoService = alunoService;
     }
     findAll(page, limit) {
-        const pageNumber = page ? parseInt(page) : 1;
-        const limitNumber = limit ? parseInt(limit) : 10;
+        const pageNumber = page ? parseInt(page, 10) : 1;
+        const limitNumber = limit ? parseInt(limit, 10) : 10;
         return this.alunoService.findAll(pageNumber, limitNumber);
     }
     findOne(id) {

@@ -19,12 +19,13 @@ export class AlunoController {
   constructor(private readonly alunoService: AlunoService) {}
 
   @Get()
-  findAll(@Query('page') page?: string, @Query('limit') limit?: string) {
-    const pageNumber = page ? parseInt(page) : 1;
-    const limitNumber = limit ? parseInt(limit) : 10;
+    findAll(@Query('page') page?: string, @Query('limit') limit?: string) {
+    const pageNumber = page ? parseInt(page, 10) : 1;
+    const limitNumber = limit ? parseInt(limit, 10) : 10;
     return this.alunoService.findAll(pageNumber, limitNumber);
   }
-
+  
+  
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.alunoService.findOne(id);

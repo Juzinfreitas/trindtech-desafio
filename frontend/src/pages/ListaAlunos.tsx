@@ -9,7 +9,7 @@ interface Aluno {
   nome: string;
   cidade: string;
   estado: string;
-  cursos: string[];
+  cursos: string[]; 
   createdAt: string;
 }
 
@@ -28,12 +28,16 @@ export default function ListaAlunos() {
         throw new Error(`Erro ${res.status}: ${text}`);
       }
       const data = await res.json();
-      console.log('Dados recebidos:', data);
-      setAlunos(data.rows);
-      
 
-      if (Array.isArray(data.rows)) {
-        setAlunos(data.rows);
+      const alunosComCursos = (data.rows || []).map((aluno: any) => ({
+        ...aluno,
+        cursos: (aluno.cursos || [])
+          .map((alunoCurso: any) => alunoCurso.curso?.nome)
+          .filter(Boolean),
+      }));
+
+      if (Array.isArray(alunosComCursos)) {
+        setAlunos(alunosComCursos);
       } else {
         alert('Erro: resposta da API não é um array');
         setAlunos([]);
@@ -48,8 +52,8 @@ export default function ListaAlunos() {
   }, []);
 
   const alunosFiltrados = alunos.filter(
-  (aluno) => aluno && aluno.nome && aluno.nome.toLowerCase().includes(filtro.toLowerCase())
-);
+    (aluno) => aluno && aluno.nome && aluno.nome.toLowerCase().includes(filtro.toLowerCase())
+  );
 
   const totalPages = Math.ceil(alunosFiltrados.length / alunosPorPagina);
   const alunosPaginados = alunosFiltrados.slice(
@@ -57,7 +61,7 @@ export default function ListaAlunos() {
     currentPage * alunosPorPagina
   );
 
-    const renderCursos = (cursos: string[]) => {
+  const renderCursos = (cursos: string[]) => {
     const visible = cursos.slice(0, 4);
     const extra = cursos.length - visible.length;
     return (
@@ -100,71 +104,75 @@ export default function ListaAlunos() {
 
   return (
     <div className="max-w-4x2 mx-auto bg-white shadow-md">
-  <div className="flex gap-4 items-center mb-6 bg-primary p-4">
-    <img src="/Union.svg" alt="Ícone" className="w-8 h-8" />
-    <h2 className="text-2xl font-bold text-white">Gerenciador de Alunos</h2>
-  </div>
+      <div className="flex gap-4 items-center mb-6 bg-primary p-4">
+        <img src="/Union.svg" alt="Ícone" className="w-8 h-8" />
+        <h2 className="text-2xl font-bold text-white">Gerenciador de Alunos</h2>
+      </div>
 
-  <div className="flex md:flex-row items-stretch md:items-center justify-between gap-4 mb-4 pl-4">
-    <div className="flex border rounded-md w-full md:w-1/2 items-center px-4">
-      <input
-        type="text"
-        placeholder="Buscar por nome..."
-        className="w-full py-2 focus:outline-none"
-        value={filtro}
-        onChange={(e) => { setFiltro (e.target.value)
-          setCurrentPage(1); 
-        }}
-      />
-      <span className="text-gray-500">
-        <Lupa />
-      </span>
-    </div>
+      <div className="flex md:flex-row items-stretch md:items-center justify-between gap-4 mb-4 pl-4">
+        <div className="flex border rounded-md w-full md:w-1/2 items-center px-4">
+          <input
+            type="text"
+            placeholder="Buscar por nome..."
+            className="w-full py-2 focus:outline-none"
+            value={filtro}
+            onChange={(e) => { setFiltro(e.target.value); setCurrentPage(1); }}
+          />
+          <span className="text-gray-500">
+            <Lupa />
+          </span>
+        </div>
 
-    <button
-      onClick={() => navigate('/alunos/novo')}
-      className="flex items-center gap-2 bg-white text-primary border border-primary px-4 py-2 rounded-md hover:bg-red-400 hover:text-white transition"
-    >
-      <IconeBotaoAdicionar />
-      Adicionar
-    </button>
-  </div>
+        <button
+          onClick={() => navigate('/alunos/novo')}
+          className="flex items-center gap-2 bg-white text-primary border border-primary px-4 py-2 rounded-md hover:bg-red-400 hover:text-white transition"
+        >
+          <IconeBotaoAdicionar />
+          Adicionar
+        </button>
+      </div>
 
-  <table className="w-full border border-gray-200 rounded overflow-hidden text-sm">
-    <thead className="bg-gray-100 text-left text-gray-700">
-      <tr>
-          <th className="py-3 text-left pl-2">
-            Data de cadastro
-            <span className="ml-2 text-xs cursor-pointer">↑↓</span>
-          </th>
-        <th className="border px-4 py-3">Nome</th>
-        <th className="border px-4 py-3">Estado</th>
-        <th className="border px-4 py-3">Cursos</th>
-      </tr>
-    </thead>
-    <tbody>
-      {alunosFiltrados.length === 0 ? (
-        <tr>
-          <td colSpan={4} className="text-center py-6 text-gray-500">
-            Nenhum aluno encontrado.
-          </td>
-        </tr>
-      ) : (
-        alunosPaginados.map((aluno) => (
-          <tr key={aluno.id} className=" border-b hover:bg-gray-50">
+      <table className="w-full border border-gray-200 rounded overflow-hidden text-sm">
+        <thead className="bg-gray-100 text-left text-gray-700">
+          <tr>
+            <th className="py-3 text-left pl-2">
+              Data de cadastro
+              <span className="ml-2 text-xs cursor-pointer">↑↓</span>
+            </th>
+            <th className="border px-4 py-3">Nome</th>
+            <th className="border px-4 py-3">Estado</th>
+            <th className="border px-4 py-3">Cursos</th>
+            <th className="border px-4 py-3">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {alunosFiltrados.length === 0 ? (
+            <tr>
+              <td colSpan={5} className="text-center py-6 text-gray-500">
+                Nenhum aluno encontrado.
+              </td>
+            </tr>
+          ) : (
+            alunosPaginados.map((aluno) => (
+              <tr key={aluno.id} className="border-b hover:bg-gray-50">
                 <td className="py-3 pl-2 text-gray-500">
                   {aluno.createdAt
                     ? new Date(aluno.createdAt).toLocaleDateString('pt-BR')
                     : ''}
                 </td>
-            <td className="py-3 font-semibold text-gray-700">{aluno.nome}</td>
-            <td className="py-3 text-gray-600">{aluno.estado}</td>
-            <td className="py-3">{renderCursos(aluno.cursos)}</td>
-          </tr>
-        ))
-      )}
-    </tbody>
-  </table>
+                <td className="py-3 font-semibold text-gray-700">{aluno.nome}</td>
+                <td className="py-3 text-gray-600">{aluno.estado}</td>
+                <td className="py-3">{renderCursos(aluno.cursos)}</td>
+                <td className="py-3 text-blue-600 hover:underline cursor-pointer">
+                  <button onClick={() => navigate(`/alunos/${aluno.id}/editar`)} className="text-blue-600 hover:underline">
+                    Editar
+                  </button>
+                </td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
 
       <div className="flex justify-center mt-6 space-x-2">
         <button
