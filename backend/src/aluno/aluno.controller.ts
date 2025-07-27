@@ -2,42 +2,39 @@ import {
   Controller,
   Get,
   Post,
-  Body,
-  Param,
   Put,
   Delete,
+  Param,
+  Body,
   Query,
   ParseIntPipe,
 } from '@nestjs/common';
 import { AlunoService } from './aluno.service';
 import { CreateAlunoDto } from './dto/create-aluno.dto';
 import { UpdateAlunoDto } from './dto/update-aluno.dto';
-import { VincularCursoDto } from './dto/vincular-curso.dto';
 
 @Controller('alunos')
 export class AlunoController {
   constructor(private readonly alunoService: AlunoService) {}
 
   @Get()
-    findAll(@Query('page') page?: string, @Query('limit') limit?: string) {
+  async findAll(@Query('page') page?: string, @Query('limit') limit?: string) {
     const pageNumber = page ? parseInt(page, 10) : 1;
     const limitNumber = limit ? parseInt(limit, 10) : 10;
     return this.alunoService.findAll(pageNumber, limitNumber);
   }
-  
-  
-  @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.alunoService.findOne(id);
-  }
 
+  @Get(':id')
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+  return this.alunoService.findOne(id);
+}
   @Post()
-  create(@Body() createAlunoDto: CreateAlunoDto) {
+  async create(@Body() createAlunoDto: CreateAlunoDto) {
     return this.alunoService.create(createAlunoDto);
   }
 
   @Put(':id')
-  update(
+  async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateAlunoDto: UpdateAlunoDto,
   ) {
@@ -45,23 +42,7 @@ export class AlunoController {
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
+  async remove(@Param('id', ParseIntPipe) id: number) {
     return this.alunoService.remove(id);
-  }
-
-  @Post(':id/vincular-curso')
-  vincularCurso(
-    @Param('id', ParseIntPipe) alunoId: number,
-    @Body() vincularCursoDto: VincularCursoDto,
-  ) {
-    return this.alunoService.vincularCurso(alunoId, vincularCursoDto.cursoId);
-  }
-
-  @Delete(':id/desvincular-curso/:cursoId')
-  desvincularCurso(
-    @Param('id', ParseIntPipe) alunoId: number,
-    @Param('cursoId', ParseIntPipe) cursoId: number,
-  ) {
-    return this.alunoService.desvincularCurso(alunoId, cursoId);
   }
 }

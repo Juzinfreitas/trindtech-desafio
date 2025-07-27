@@ -1,8 +1,11 @@
-import { Table, Column, Model, DataType, HasMany } from 'sequelize-typescript';
-import { AlunoCurso } from 'src/alunoCurso/entities/aluno-curso.model';
+import { Table, Column, Model, DataType,} from 'sequelize-typescript';
 
 @Table
 export class Aluno extends Model {
+
+  @Column({ primaryKey: true, autoIncrement: true, type: DataType.INTEGER })
+  declare id: number;
+
   @Column({ type: DataType.STRING, allowNull: false })
   nome: string;
 
@@ -45,6 +48,16 @@ export class Aluno extends Model {
   @Column({ type: DataType.STRING })
   pais: string;
 
-  @HasMany(() => AlunoCurso)
-  cursos: AlunoCurso[];
+  @Column({ type: DataType.JSONB, allowNull: false, defaultValue: [] })
+  cursosConcluidos: { nome: string; dataConclusao: string }[];
+
+  @Column({ type: DataType.JSONB, allowNull: false, defaultValue: [] })
+  cursosEmAndamento: { nome: string; dataConclusao: string }[];
+
+  @Column({
+    type: DataType.ARRAY(DataType.STRING),
+    allowNull: false,
+    defaultValue: [],
+  })
+  cursos: string[];
 }

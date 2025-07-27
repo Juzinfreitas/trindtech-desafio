@@ -57,4 +57,8 @@ export class CreateAlunoDto {
   @IsOptional()
   @IsString()
   pais?: string;
+
+  @IsOptional()
+  @IsString()
+  cursos?: string[];  
 }

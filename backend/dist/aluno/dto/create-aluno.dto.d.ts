@@ -13,4 +13,5 @@ export declare class CreateAlunoDto {
     bairro?: string;
     complemento?: string;
     pais?: string;
+    cursos?: string[];
 }

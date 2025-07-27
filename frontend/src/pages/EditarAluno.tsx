@@ -6,6 +6,7 @@ import { IconeConcluido } from '../components/icone_concluido';
 import { IconeCurso } from '../components/icone_curso';
 import { Seta } from '../components/seta';
 import { CruzCurso } from '../components/cruz_curso';
+import React from 'react';
 
 const EditarAluno = () => {
   const { id } = useParams<{ id: string }>();
@@ -61,70 +62,75 @@ const EditarAluno = () => {
     const { name, value } = e.target;
     setAluno((prev) => ({ ...prev, [name]: value }));
   };
-
-const adicionarCurso = async (tipo: 'concluido' | 'andamento') => {
-  let nome = '';
-  let dataConclusao = '';
-
-  if (tipo === 'concluido') {
-    if (!novoCursoConcluido.trim() || !dataCursoConcluido.trim()) return;
-    nome = novoCursoConcluido.trim();
-    dataConclusao = dataCursoConcluido.trim();
-  } else if (tipo === 'andamento') {
-    if (!novoCursoAndamento.trim() || !dataCursoAndamento.trim()) return;
-    nome = novoCursoAndamento.trim();
-    dataConclusao = dataCursoAndamento.trim();
-  } else {
-    return;
-  }
   
-  const cursoRes = await fetch(`${API_BASE_URL}/cursos`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ nome }), 
-  });
+  const adicionarCurso = async (tipo: 'concluido' | 'andamento') => {
+    let nome = '';
+    let dataConclusao = '';
 
-  if (!cursoRes.ok) {
-    alert('Erro ao criar curso');
-    return;
-  }
+    if (tipo === 'concluido') {
+      if (!novoCursoConcluido.trim() || !dataCursoConcluido.trim()) return;
+      nome = novoCursoConcluido.trim();
+      dataConclusao = dataCursoConcluido.trim();
 
-  const cursoCriado = await cursoRes.json();
+      const alunoAtualizado = {
+        ...aluno,
+        cursosConcluidos: [
+          ...aluno.cursosConcluidos,
+          { nome, dataConclusao }
+        ],
+      };
 
-  const vinculoRes = await fetch(`${API_BASE_URL}/alunos/${id}/vincular-curso`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ cursoId: cursoCriado.id }),
-  });
+      try {
+        const res = await fetch(`${API_BASE_URL}/alunos/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(alunoAtualizado),
+        });
+        if (!res.ok) throw new Error('Erro ao atualizar aluno');
+        const alunoData = await res.json();
+        setAluno({
+          ...alunoData,
+          cursosConcluidos: alunoData.cursosConcluidos || [],
+          cursosEmAndamento: alunoData.cursosEmAndamento || [],
+        });
+        setNovoCursoConcluido('');
+        setDataCursoConcluido('');
+      } catch {
+        alert('Erro ao salvar curso concluído');
+      }
+    } else if (tipo === 'andamento') {
+      if (!novoCursoAndamento.trim() || !dataCursoAndamento.trim()) return;
+      nome = novoCursoAndamento.trim();
+      dataConclusao = dataCursoAndamento.trim();
 
-  if (!vinculoRes.ok) {
-    alert('Erro ao vincular curso ao aluno');
-    return;
-  }
+      const alunoAtualizado = {
+        ...aluno,
+        cursosEmAndamento: [
+          ...aluno.cursosEmAndamento,
+          { nome, dataConclusao }
+        ],
+      };
 
-
-  const fetchData = async () => {
-  if (!id) return;
-  try {
-    const alunoRes = await fetch(`${API_BASE_URL}/alunos/${id}`);
-    if (!alunoRes.ok) throw new Error('Erro ao buscar aluno');
-    const alunoData = await alunoRes.json();
-    setAluno(alunoData);
-  } catch {
-    alert('Erro ao carregar dados do aluno');
-  }
-};
-  await fetchData();
-
-  if (tipo === 'concluido') {
-    setNovoCursoConcluido('');
-    setDataCursoConcluido('');
-  } else {
-    setNovoCursoAndamento('');
-    setDataCursoAndamento('');
-  }
-  navigate(`/`)
-};
+      try {
+        const res = await fetch(`${API_BASE_URL}/alunos/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(alunoAtualizado),
+        });
+        if (!res.ok) throw new Error('Erro ao atualizar aluno');
+        const alunoData = await res.json();
+        setAluno({
+          ...alunoData,
+          cursosConcluidos: alunoData.cursosConcluidos || [],
+          cursosEmAndamento: alunoData.cursosEmAndamento || [],
+        });
+        setNovoCursoAndamento('');
+        setDataCursoAndamento('');
+      } catch {
+        alert('Erro ao salvar curso em andamento');
+      }
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -132,11 +138,7 @@ const adicionarCurso = async (tipo: 'concluido' | 'andamento') => {
       const res = await fetch(`${API_BASE_URL}/alunos/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...aluno,
-          cursosConcluidos: aluno.cursosConcluidos,
-          cursosEmAndamento: aluno.cursosEmAndamento,
-        }),
+        body: JSON.stringify(aluno),
       });
       if (res.ok) {
         navigate('/');

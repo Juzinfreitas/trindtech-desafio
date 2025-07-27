@@ -17,17 +17,28 @@ interface Aluno {
 
 export default function Alunos() {
   const [alunos, setAlunos] = useState<Aluno[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const alunosPorPagina = 10;
   const navigate = useNavigate();
 
+  const fetchAlunos = async (page = 1, limit = alunosPorPagina) => {
+    try {
+      const res = await fetch(`http://localhost:3000/alunos?page=${page}&limit=${limit}`);
+      const data = await res.json();
+      setAlunos(data.rows); 
+      setTotalCount(data.totalCount); 
+    } catch (err) { 
+      console.error('Erro ao buscar alunos:', err);
+    }
+  };
+
   useEffect(() => {
-    fetch('http://localhost:3000/alunos')
-      .then((res) => res.json())
-      .then((data) => {
-        console.log('Dados recebidos:', data); 
-        setAlunos(data.rows);
-      })
-      .catch((err) => console.error('Erro ao buscar alunos:', err));
-  }, []);
+    fetchAlunos(currentPage, alunosPorPagina);
+  }, [currentPage]);
+
+  const totalPages = Math.max(1, Math.ceil(totalCount / alunosPorPagina));
+
 
   return (
     <div className="p-4">
@@ -77,6 +88,35 @@ export default function Alunos() {
           ))}
         </ul>
       )}
+            <div className="flex justify-center mt-6 space-x-2">
+        <button
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+          className="px-3 py-1 text-gray-700 border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50"
+        >
+          ← Anterior
+        </button>
+        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+          <button
+            key={page}
+            onClick={() => setCurrentPage(page)}
+            className={`px-3 py-1 border rounded ${
+              currentPage === page
+                ? 'bg-blue-600 text-white border-blue-600'
+                : 'text-gray-700 border-gray-300 hover:bg-gray-100'
+            }`}
+          >
+            {page}
+          </button>
+        ))}
+        <button
+          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+          disabled={currentPage === totalPages}
+          className="px-3 py-1 text-gray-700 border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50"
+        >
+          Próximo →
+        </button>
+      </div>
     </div>
   );
 }

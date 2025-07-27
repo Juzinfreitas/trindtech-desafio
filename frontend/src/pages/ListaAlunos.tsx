@@ -4,12 +4,48 @@ import { API_BASE_URL } from '../services/api';
 import { Lupa } from '../components/lupa';
 import { IconeBotaoAdicionar } from '../components/icone_botao_adicionar';
 
+// Novo componente para chips/tags de cursos
+const CursoTags = ({
+  cursos,
+  maxVisible = 4,
+}: {
+  cursos: { nome: string }[] | string[];
+  maxVisible?: number;
+}) => {
+  const cursoNomes =
+    cursos.length > 0 && typeof cursos[0] === 'object'
+      ? (cursos as { nome: string }[]).map((c) => c.nome)
+      : (cursos as string[]);
+
+  const visible = cursoNomes.slice(0, maxVisible);
+  const extra = cursoNomes.length - visible.length;
+  return (
+    <div className="flex flex-wrap gap-2">
+      {visible.map((curso, idx) => (
+        <span
+          key={curso + idx}
+          className="bg-blue-50 text-blue-600 px-2 py-1 rounded-full text-xs font-medium"
+        >
+          {curso}
+        </span>
+      ))}
+      {extra > 0 && (
+        <span className="bg-blue-50 text-blue-600 px-2 py-1 rounded-full text-xs font-medium">
+          +{extra}
+        </span>
+      )}
+    </div>
+  );
+};
+
 interface Aluno {
   id: number;
   nome: string;
+  sobrenome: string;
   cidade: string;
   estado: string;
-  cursos: string[]; 
+  cursosConcluidos?: { nome: string }[];
+  cursosEmAndamento?: { nome: string }[];
   createdAt: string;
 }
 
@@ -18,70 +54,38 @@ export default function ListaAlunos() {
   const [filtro, setFiltro] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const alunosPorPagina = 10;
+  const [totalPages, setTotalPages] = useState(1);
   const navigate = useNavigate();
 
-  const buscarAlunos = async () => {
+  const buscarAlunos = async (page = 1, limit = 10) => {
     try {
-      const res = await fetch(`${API_BASE_URL}/alunos`);
+      const res = await fetch(`${API_BASE_URL}/alunos?page=${page}&limit=${limit}&filtro=${encodeURIComponent(filtro)}`);
       if (!res.ok) {
         const text = await res.text();
         throw new Error(`Erro ${res.status}: ${text}`);
       }
       const data = await res.json();
 
-      const alunosComCursos = (data.rows || []).map((aluno: any) => ({
-        ...aluno,
-        cursos: (aluno.cursos || [])
-          .map((alunoCurso: any) => alunoCurso.curso?.nome)
-          .filter(Boolean),
-      }));
-
-      if (Array.isArray(alunosComCursos)) {
-        setAlunos(alunosComCursos);
-      } else {
-        alert('Erro: resposta da API não é um array');
-        setAlunos([]);
-      }
+      // Backend precisa retornar totalCount para calcular totalPages!
+      setAlunos(data.rows || []);
+      setTotalPages(Math.max(1, Math.ceil((data.totalCount || 0) / alunosPorPagina)));
     } catch (error: any) {
       alert(`Erro ao buscar alunos: ${error.message}`);
     }
   };
 
   useEffect(() => {
-    buscarAlunos();
-  }, []);
+    buscarAlunos(currentPage, alunosPorPagina);
+  }, [currentPage, alunosPorPagina, filtro]);
 
-  const alunosFiltrados = alunos.filter(
-    (aluno) => aluno && aluno.nome && aluno.nome.toLowerCase().includes(filtro.toLowerCase())
-  );
-
-  const totalPages = Math.ceil(alunosFiltrados.length / alunosPorPagina);
-  const alunosPaginados = alunosFiltrados.slice(
-    (currentPage - 1) * alunosPorPagina,
-    currentPage * alunosPorPagina
-  );
-
-  const renderCursos = (cursos: string[]) => {
-    const visible = cursos.slice(0, 4);
-    const extra = cursos.length - visible.length;
-    return (
-      <div className="flex flex-wrap gap-2">
-        {visible.map((curso, idx) => (
-          <span
-            key={curso + idx}
-            className="bg-blue-50 text-blue-600 px-2 py-1 rounded-full text-xs font-medium"
-          >
-            {curso}
-          </span>
-        ))}
-        {extra > 0 && (
-          <span className="bg-gray-100 text-gray-500 px-2 py-1 rounded-full text-xs font-medium">
-            +{extra}
-          </span>
-        )}
-      </div>
-    );
+  const renderCursos = (aluno: Aluno) => {
+    const todosCursos = [
+      ...(aluno.cursosConcluidos ?? []),
+      ...(aluno.cursosEmAndamento ?? [])
+    ];
+    return <CursoTags cursos={todosCursos} maxVisible={4} />;
   };
+
   const renderPaginationButtons = () => {
     const pageButtons = [];
     for (let i = 1; i <= totalPages; i++) {
@@ -146,23 +150,23 @@ export default function ListaAlunos() {
           </tr>
         </thead>
         <tbody>
-          {alunosFiltrados.length === 0 ? (
+          {alunos.length === 0 ? (
             <tr>
               <td colSpan={5} className="text-center py-6 text-gray-500">
                 Nenhum aluno encontrado.
               </td>
             </tr>
           ) : (
-            alunosPaginados.map((aluno) => (
+            alunos.map((aluno) => (
               <tr key={aluno.id} className="border-b hover:bg-gray-50">
                 <td className="py-3 pl-2 text-gray-500">
                   {aluno.createdAt
                     ? new Date(aluno.createdAt).toLocaleDateString('pt-BR')
                     : ''}
                 </td>
-                <td className="py-3 font-semibold text-gray-700">{aluno.nome}</td>
+                <td className="py-3 font-semibold text-gray-700">{aluno.nome} {aluno.sobrenome}</td>
                 <td className="py-3 text-gray-600">{aluno.estado}</td>
-                <td className="py-3">{renderCursos(aluno.cursos)}</td>
+                <td className="py-3">{renderCursos(aluno)}</td>
                 <td className="py-3 text-blue-600 hover:underline cursor-pointer">
                   <button onClick={() => navigate(`/alunos/${aluno.id}/editar`)} className="text-blue-600 hover:underline">
                     Editar

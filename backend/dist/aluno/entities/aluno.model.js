@@ -11,7 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Aluno = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
-const aluno_curso_model_1 = require("../../alunoCurso/entities/aluno-curso.model");
 let Aluno = class Aluno extends sequelize_typescript_1.Model {
     nome;
     sobrenome;
@@ -27,9 +26,15 @@ let Aluno = class Aluno extends sequelize_typescript_1.Model {
     bairro;
     complemento;
     pais;
+    cursosConcluidos;
+    cursosEmAndamento;
     cursos;
 };
 exports.Aluno = Aluno;
+__decorate([
+    (0, sequelize_typescript_1.Column)({ primaryKey: true, autoIncrement: true, type: sequelize_typescript_1.DataType.INTEGER }),
+    __metadata("design:type", Number)
+], Aluno.prototype, "id", void 0);
 __decorate([
     (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.STRING, allowNull: false }),
     __metadata("design:type", String)
@@ -87,7 +92,19 @@ __decorate([
     __metadata("design:type", String)
 ], Aluno.prototype, "pais", void 0);
 __decorate([
-    (0, sequelize_typescript_1.HasMany)(() => aluno_curso_model_1.AlunoCurso),
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.JSONB, allowNull: false, defaultValue: [] }),
+    __metadata("design:type", Array)
+], Aluno.prototype, "cursosConcluidos", void 0);
+__decorate([
+    (0, sequelize_typescript_1.Column)({ type: sequelize_typescript_1.DataType.JSONB, allowNull: false, defaultValue: [] }),
+    __metadata("design:type", Array)
+], Aluno.prototype, "cursosEmAndamento", void 0);
+__decorate([
+    (0, sequelize_typescript_1.Column)({
+        type: sequelize_typescript_1.DataType.ARRAY(sequelize_typescript_1.DataType.STRING),
+        allowNull: false,
+        defaultValue: [],
+    }),
     __metadata("design:type", Array)
 ], Aluno.prototype, "cursos", void 0);
 exports.Aluno = Aluno = __decorate([

@@ -1,6 +1,6 @@
 import { Model } from 'sequelize-typescript';
-import { AlunoCurso } from 'src/alunoCurso/entities/aluno-curso.model';
 export declare class Aluno extends Model {
+    id: number;
     nome: string;
     sobrenome: string;
     email: string;
@@ -15,5 +15,13 @@ export declare class Aluno extends Model {
     bairro: string;
     complemento: string;
     pais: string;
-    cursos: AlunoCurso[];
+    cursosConcluidos: {
+        nome: string;
+        dataConclusao: string;
+    }[];
+    cursosEmAndamento: {
+        nome: string;
+        dataConclusao: string;
+    }[];
+    cursos: string[];
 }

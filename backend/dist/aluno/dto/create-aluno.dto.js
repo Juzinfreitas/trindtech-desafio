@@ -26,6 +26,7 @@ class CreateAlunoDto {
     bairro;
     complemento;
     pais;
+    cursos;
 }
 exports.CreateAlunoDto = CreateAlunoDto;
 __decorate([
@@ -99,4 +100,9 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateAlunoDto.prototype, "pais", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", Array)
+], CreateAlunoDto.prototype, "cursos", void 0);
 //# sourceMappingURL=create-aluno.dto.js.map

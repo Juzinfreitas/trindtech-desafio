@@ -15,40 +15,25 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AlunoService = void 0;
 const common_1 = require("@nestjs/common");
 const sequelize_1 = require("@nestjs/sequelize");
-const aluno_model_1 = require("./entities/aluno.model");
-const aluno_curso_model_1 = require("../alunoCurso/entities/aluno-curso.model");
-const curso_model_1 = require("../curso/entities/curso.model");
+const aluno_model_1 = require("./../aluno/entities/aluno.model");
 let AlunoService = class AlunoService {
     alunoModel;
-    alunoCursoModel;
-    constructor(alunoModel, alunoCursoModel) {
+    constructor(alunoModel) {
         this.alunoModel = alunoModel;
-        this.alunoCursoModel = alunoCursoModel;
     }
     async findAll(page = 1, limit = 10) {
         const offset = (page - 1) * limit;
-        return this.alunoModel.findAndCountAll({
+        const { rows, count } = await this.alunoModel.findAndCountAll({
             offset,
             limit,
-            include: [
-                {
-                    model: aluno_curso_model_1.AlunoCurso,
-                    include: [curso_model_1.Curso],
-                },
-            ],
         });
+        return { rows, totalCount: count };
     }
     async findOne(id) {
-        const aluno = await this.alunoModel.findByPk(id, {
-            include: [
-                {
-                    model: aluno_curso_model_1.AlunoCurso,
-                    include: [curso_model_1.Curso],
-                },
-            ],
-        });
-        if (!aluno)
+        const aluno = await this.alunoModel.findByPk(id);
+        if (!aluno) {
             throw new common_1.NotFoundException('Aluno não encontrado');
+        }
         return aluno;
     }
     async create(data) {
@@ -62,23 +47,11 @@ let AlunoService = class AlunoService {
         const aluno = await this.findOne(id);
         await aluno.destroy();
     }
-    async vincularCurso(alunoId, cursoId) {
-        await this.alunoCursoModel.findOrCreate({
-            where: { alunoId, cursoId },
-            defaults: { status: 'andamento' },
-        });
-        return this.findOne(alunoId);
-    }
-    async desvincularCurso(alunoId, cursoId) {
-        await this.alunoCursoModel.destroy({ where: { alunoId, cursoId } });
-        return this.findOne(alunoId);
-    }
 };
 exports.AlunoService = AlunoService;
 exports.AlunoService = AlunoService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, sequelize_1.InjectModel)(aluno_model_1.Aluno)),
-    __param(1, (0, sequelize_1.InjectModel)(aluno_curso_model_1.AlunoCurso)),
-    __metadata("design:paramtypes", [Object, Object])
+    __metadata("design:paramtypes", [Object])
 ], AlunoService);
 //# sourceMappingURL=aluno.service.js.map
