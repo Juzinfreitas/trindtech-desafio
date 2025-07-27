@@ -6,8 +6,6 @@ Este é um sistema desenvolvido como parte de um desafio técnico. Ele permite o
 
 O sistema foi desenvolvido com foco em modularidade, organização e escalabilidade, usando NestJS no backend e React com Tailwind no frontend. O banco de dados é PostgreSQL e roda com Docker, facilitando o setup do ambiente.
 
-> ⚠️ O projeto ainda está em desenvolvimento. Algumas funcionalidades e melhorias estão sendo implementadas.
-
 ---
 
 ## 🔧 Tecnologias utilizadas
@@ -19,18 +17,11 @@ O sistema foi desenvolvido com foco em modularidade, organização e escalabilid
 ---
 
 ## 📁 Principais arquivos e pastas
-
-### Backend:
-- `/src/aluno/`: regras de negócio e rotas para alunos
-- `/src/curso/`: regras de negócio e rotas para cursos
-- `/src/alunoCurso/`: controle de vínculo entre alunos e cursos
-- `aluno.model.ts`, `curso.model.ts`, `aluno-curso.model.ts`: definem os modelos e relações entre as tabelas
-
-### Frontend:
-- `/pages/alunos.tsx`: exibe a lista de alunos
-- `/pages/alunos/novo.tsx`: tela de cadastro de aluno
-- `/services/api.ts`: configura a comunicação com a API NestJS
-
+- **backend/aluno.model.ts**: Model Sequelize do aluno, incluindo campos e relação com cursos.
+- **backend/aluno.controller.ts**: Controller NestJS para rotas de alunos.
+- **backend/aluno.service.ts**: Service NestJS com lógica de negócio e paginação.
+- **frontend/pages/ListaAlunos.tsx**: Componente principal para listagem e paginação dos alunos.
+- **frontend/pages/EditarAluno.tsx**: Componente para editar dados de um aluno.
 ---
 
 ## ▶️ Como rodar o projeto localmente
