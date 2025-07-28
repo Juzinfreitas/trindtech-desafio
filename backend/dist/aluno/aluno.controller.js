@@ -22,10 +22,10 @@ let AlunoController = class AlunoController {
     constructor(alunoService) {
         this.alunoService = alunoService;
     }
-    async findAll(page, limit) {
+    async findAll(page, limit, filtro) {
         const pageNumber = page ? parseInt(page, 10) : 1;
         const limitNumber = limit ? parseInt(limit, 10) : 10;
-        return this.alunoService.findAll(pageNumber, limitNumber);
+        return this.alunoService.findAll(pageNumber, limitNumber, filtro);
     }
     async findOne(id) {
         return this.alunoService.findOne(id);
@@ -45,8 +45,9 @@ __decorate([
     (0, common_1.Get)(),
     __param(0, (0, common_1.Query)('page')),
     __param(1, (0, common_1.Query)('limit')),
+    __param(2, (0, common_1.Query)('filtro')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", Promise)
 ], AlunoController.prototype, "findAll", null);
 __decorate([

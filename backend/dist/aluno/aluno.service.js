@@ -16,14 +16,23 @@ exports.AlunoService = void 0;
 const common_1 = require("@nestjs/common");
 const sequelize_1 = require("@nestjs/sequelize");
 const aluno_model_1 = require("./../aluno/entities/aluno.model");
+const sequelize_2 = require("sequelize");
 let AlunoService = class AlunoService {
     alunoModel;
     constructor(alunoModel) {
         this.alunoModel = alunoModel;
     }
-    async findAll(page = 1, limit = 10) {
+    async findAll(page = 1, limit = 10, filtro) {
         const offset = (page - 1) * limit;
+        const where = {};
+        if (filtro) {
+            where[sequelize_2.Op.or] = [
+                { nome: { [sequelize_2.Op.iLike]: `%${filtro}%` } },
+                { sobrenome: { [sequelize_2.Op.iLike]: `%${filtro}%` } }
+            ];
+        }
         const { rows, count } = await this.alunoModel.findAndCountAll({
+            where,
             offset,
             limit,
         });

@@ -6,7 +6,6 @@ export class CreateAlunoDto {
   @Length(2, 100)
   nome: string;
 
-  @IsOptional()
   @IsString()
   sobrenome?: string;
 

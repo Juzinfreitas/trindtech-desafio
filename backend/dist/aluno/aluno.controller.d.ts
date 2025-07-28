@@ -4,7 +4,7 @@ import { UpdateAlunoDto } from './dto/update-aluno.dto';
 export declare class AlunoController {
     private readonly alunoService;
     constructor(alunoService: AlunoService);
-    findAll(page?: string, limit?: string): Promise<{
+    findAll(page?: string, limit?: string, filtro?: string): Promise<{
         rows: import("./entities/aluno.model").Aluno[];
         totalCount: number;
     }>;

@@ -10,11 +10,7 @@ exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const sequelize_1 = require("@nestjs/sequelize");
 const aluno_module_1 = require("./aluno/aluno.module");
-const curso_module_1 = require("./curso/curso.module");
-const aluno_curso_module_1 = require("./alunoCurso/aluno-curso.module");
 const aluno_model_1 = require("./aluno/entities/aluno.model");
-const curso_model_1 = require("./curso/entities/curso.model");
-const aluno_curso_model_1 = require("./alunoCurso/entities/aluno-curso.model");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -28,7 +24,7 @@ exports.AppModule = AppModule = __decorate([
                 username: 'postgres',
                 password: 'postgres',
                 database: 'trindtech',
-                models: [aluno_model_1.Aluno, curso_model_1.Curso, aluno_curso_model_1.AlunoCurso],
+                models: [aluno_model_1.Aluno],
                 autoLoadModels: true,
                 synchronize: true,
                 sync: {

@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Aluno } from './../aluno/entities/aluno.model';
 import { CreateAlunoDto } from './dto/create-aluno.dto';
 import { UpdateAlunoDto } from './dto/update-aluno.dto';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class AlunoService {
@@ -10,9 +11,18 @@ export class AlunoService {
     @InjectModel(Aluno) private alunoModel: typeof Aluno,
   ) {}
 
-  async findAll(page = 1, limit = 10): Promise<{ rows: Aluno[]; totalCount: number }> {
+  async findAll(page = 1, limit = 10, filtro?: string): Promise<{ rows: Aluno[]; totalCount: number }> {
     const offset = (page - 1) * limit;
+     const where: any = {};
+
+      if (filtro) {
+      where[Op.or] = [
+        { nome: { [Op.iLike]: `%${filtro}%` } },
+        { sobrenome: { [Op.iLike]: `%${filtro}%` } }
+      ];
+    }
     const { rows, count } = await this.alunoModel.findAndCountAll({
+      where,
       offset,
       limit,
     });
